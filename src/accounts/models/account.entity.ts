@@ -2,17 +2,18 @@ import {
   Column,
   PrimaryGeneratedColumn,
   Entity,
-  OneToMany,
+  ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
 } from 'typeorm';
-import { Field, ObjectType } from '@nestjs/graphql';
-import { Account } from 'src/accounts/models/account.entity';
+import { ObjectType, Field } from '@nestjs/graphql';
+import { AccountType } from '../common/accounts.enums';
+import { User } from 'src/users/models/user.entity';
 
 @Entity()
 @ObjectType()
-export class User {
+export class Account {
   @PrimaryGeneratedColumn('uuid')
   @Field()
   id: string;
@@ -21,21 +22,29 @@ export class User {
   @Field()
   name: string;
 
+  @Column({
+    type: 'varchar',
+    enum: AccountType,
+    default: AccountType.SAVINGS,
+  })
+  @Field()
+  type: AccountType;
+
   @Column()
   @Field()
-  lastName: string;
+  icon: string;
 
+  @Column()
+  @Field()
+  userId: string;
+
+  @ManyToOne(() => User, (user) => user.accounts)
+  @Field(() => User)
+  user: User;
+
+  @Field()
   @Column({ nullable: true })
-  @Field({ nullable: true })
-  nickName?: string;
-
-  @OneToMany(() => Account, (account) => account.user, { onDelete: 'CASCADE' })
-  @Field(() => [Account], { nullable: true })
-  accounts: Account[];
-
-  @Field()
-  @Column()
-  @CreateDateColumn({ nullable: true })
+  @CreateDateColumn()
   created_at?: Date; // Creation date
 
   @Field()
