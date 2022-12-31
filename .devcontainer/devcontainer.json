@@ -1,0 +1,29 @@
+{
+	"name": "pocket-safe",
+	"build": {
+		"context": "..",
+		"dockerfile": "../dockerfile"
+	},
+	"forwardPorts": [3000],
+	"customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+				"dbaeumer.vscode-eslint",
+				"firsttris.vscode-jest-runner",
+				"visualstudioexptteam.vscodeintellicode",
+				"vivaxy.vscode-conventional-commits",
+				"usernamehw.errorlens",
+				"mhutchie.git-graph",
+				"mrmlnc.vscode-json5",
+				"christian-kohler.path-intellisense",
+				"sirtori.indenticator",
+				"streetsidesoftware.code-spell-checker",
+				"jebbs.plantuml",
+				"shardulm94.trailing-spaces",
+				"cweijan.vscode-mysql-client2"
+			]
+    }
+  }
+}
