@@ -1,0 +1,50 @@
+@startuml domain
+class User {
+  -- primary key --
+  String id
+  ----
+  String name
+  String last_name
+  String nick_name
+  String email
+  -- encrypted --
+  String hash_password
+}
+
+class Acounts{
+  -- primary key --
+  String id
+  -- forering keys--
+  String id_user
+  ----
+  String account_name
+  String icon
+  String type
+}
+class Transactions{
+  -- primary key --
+  String id
+  -- forering keys--
+  String origin_acount_id
+  String destination_acount_id
+  String category_id
+  ----
+  Float amount
+  String type
+}
+
+class Categories{
+  -- primary key --
+  String id
+  -- forering keys--
+  String id_user
+  ----
+  String category_name
+  String icon
+}
+
+User "1" -- "1..n" Acounts
+User "1" -- "1..n" Categories
+Transactions "1" -up- "1,2" Acounts
+Transactions "1" -up- "1" Categories
+@enduml

@@ -1,0 +1,7 @@
+@startuml domain
+
+user -- Acounts : have >
+user -- Categories :have >
+transaction -up- Acounts : have 2 >
+transaction -up- Categories :have 1 >
+@enduml
