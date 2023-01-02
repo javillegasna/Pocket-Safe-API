@@ -1,0 +1,20 @@
+@startuml Use_Cases
+(Manage) as mng
+(Auth) as auth
+(Make) as mk
+
+user --> mng
+user --> auth
+user --> mk
+
+mng -->(Accounts)
+mng --> (Categories)
+mng --> (Trasanctions)
+
+auth --> (login)
+auth --> (logout)
+auth --> (register)
+
+mk --> (graphs)
+mk --> (proyections)
+@enduml
