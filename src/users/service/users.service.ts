@@ -27,8 +27,8 @@ export class UsersService {
 
   update(id: string, updateUserInput: UpdateUserInput) {
     return this.userRepository.save({
-      id,
       ...updateUserInput,
+      id,
     });
   }
 
