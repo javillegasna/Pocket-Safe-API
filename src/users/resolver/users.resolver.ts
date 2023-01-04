@@ -12,10 +12,14 @@ import { UpdateUserInput } from '../dto/update-user.input';
 
 import { User } from '../models/user.entity';
 import { UsersService } from '../service/users.service';
+import { AccountsService } from 'src/accounts/service/accounts.service';
 
 @Resolver(() => User)
 export class UsersResolver {
-  constructor(private userService: UsersService) {}
+  constructor(
+    private userService: UsersService,
+    private accountService: AccountsService,
+  ) {}
 
   @Mutation(() => User)
   createUser(@Args('userInput') userInput: CreateUserInput) {
@@ -39,7 +43,7 @@ export class UsersResolver {
 
   @ResolveField(() => [Account])
   accounts(@Parent() user: User): Promise<Account[]> {
-    return this.userService.getAllAccounts(user.id);
+    return this.accountService.findAllByUserId(user.id);
   }
 
   @Mutation(() => User)
