@@ -1,19 +1,21 @@
+import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from '../service/users.service';
+import { User } from '../models/user.entity';
 import { UsersResolver } from './users.resolver';
+import { UsersService } from '../service/users.service';
 import { CreateUserInput } from '../dto/create-user.input';
 import {
   createUserFactory,
   updateUserFactory,
   userFactory,
 } from '../common/mock/user.factory';
-import { User } from '../models/user.entity';
-import { faker } from '@faker-js/faker';
+import { AccountsService } from 'src/accounts/service/accounts.service';
 describe('UsersResolver', () => {
   let resolver: UsersResolver;
 
   const mockInputUser: CreateUserInput = createUserFactory();
   const mockUser: User = userFactory();
+
   const mockUsersService = {
     create: jest.fn((dto) => ({ ...mockUser, ...dto })),
     findAll: jest.fn(() => [mockUser]),
@@ -23,13 +25,15 @@ describe('UsersResolver', () => {
     permanentRemove: jest.fn((id) => userFactory({ id })),
   };
 
+  const mockAccountService = {};
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UsersResolver, UsersService],
-    })
-      .overrideProvider(UsersService)
-      .useValue(mockUsersService)
-      .compile();
+      providers: [
+        UsersResolver,
+        { provide: UsersService, useValue: mockUsersService },
+        { provide: AccountsService, useValue: mockAccountService },
+      ],
+    }).compile();
 
     resolver = module.get<UsersResolver>(UsersResolver);
   });

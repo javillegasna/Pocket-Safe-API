@@ -7,6 +7,7 @@ import {
   Parent,
 } from '@nestjs/graphql';
 import { AccountsService } from '../service/accounts.service';
+import { UsersService } from 'src/users/service/users.service';
 import { Account } from '../models/account.entity';
 import { CreateAccountInput } from '../dto/create-account.input';
 import { UpdateAccountInput } from '../dto/update-account.input';
@@ -14,7 +15,10 @@ import { User } from 'src/users/models/user.entity';
 
 @Resolver(() => Account)
 export class AccountsResolver {
-  constructor(private readonly accountsService: AccountsService) {}
+  constructor(
+    private readonly accountsService: AccountsService,
+    private readonly userService: UsersService,
+  ) {}
 
   @Mutation(() => Account)
   createAccount(
@@ -46,7 +50,7 @@ export class AccountsResolver {
 
   @ResolveField(() => User)
   user(@Parent() account: Account): Promise<User> {
-    return this.accountsService.getUser(account.id);
+    return this.userService.findOne(account.id);
   }
 
   @Mutation(() => Account)
