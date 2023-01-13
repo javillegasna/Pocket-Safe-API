@@ -38,7 +38,7 @@ export class Account {
   @Field()
   userId: string;
 
-  @ManyToOne(() => User, (user) => user.accounts)
+  @ManyToOne(() => User, (user) => user.accounts, { onDelete: 'CASCADE' })
   @Field(() => User)
   user: User;
 

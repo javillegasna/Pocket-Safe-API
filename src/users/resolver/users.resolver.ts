@@ -52,6 +52,11 @@ export class UsersResolver {
   }
 
   @Mutation(() => User)
+  recoverUser(@Args('id') id: string) {
+    return this.userService.recover(id);
+  }
+
+  @Mutation(() => User)
   permanentRemoveUser(@Args('id') id: string) {
     return this.userService.permanentRemove(id);
   }
