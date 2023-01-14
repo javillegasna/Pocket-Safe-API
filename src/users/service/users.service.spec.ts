@@ -20,6 +20,7 @@ describe('UsersService', () => {
     save: jest.fn((user) => Promise.resolve(user)),
     find: jest.fn().mockResolvedValue([mockUser]),
     remove: jest.fn((user) => Promise.resolve(user)),
+    restore: jest.fn((user) => Promise.resolve(user)),
     softRemove: jest.fn((user) => Promise.resolve(user)),
     create: jest.fn((dto: CreateUserInput) => ({ ...mockUser, ...dto })),
     findOneBy: jest.fn((query) =>
@@ -87,6 +88,14 @@ describe('UsersService', () => {
     expect(user.id).toBe(userId);
     expect(mockUserRepository.softRemove).toHaveBeenCalled();
     expect(mockUserRepository.softRemove).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should be return a user with the same id when recoverUser was called', async () => {
+    const userId = faker.datatype.uuid();
+    const user = await service.recover(userId);
+    expect(user.id).toBe(userId);
+    expect(mockUserRepository.restore).toHaveBeenCalled();
+    expect(mockUserRepository.restore).toHaveBeenCalledTimes(1);
   });
   it('Should be return a user with the same id when permanentRemoveUser was called', async () => {
     const userId = faker.datatype.uuid();

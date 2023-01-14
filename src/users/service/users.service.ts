@@ -37,8 +37,15 @@ export class UsersService {
     return this.userRepository.softRemove(user);
   }
 
+  async recover(id: string): Promise<User> {
+    await this.userRepository.restore(id);
+    const user = await this.userRepository.findOneBy({ id });
+    return user;
+  }
+
   async permanentRemove(id: string): Promise<User> {
     const user = await this.userRepository.findOneBy({ id });
-    return this.userRepository.remove(user);
+    await this.userRepository.remove(user);
+    return { ...user, id };
   }
 }

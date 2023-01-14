@@ -20,8 +20,9 @@ describe('UsersResolver', () => {
     create: jest.fn((dto) => ({ ...mockUser, ...dto })),
     findAll: jest.fn(() => [mockUser]),
     findOne: jest.fn((id) => userFactory({ id })),
-    updateUser: jest.fn((dto) => ({ ...mockUser, ...dto })),
+    update: jest.fn((dto) => ({ ...mockUser, ...dto })),
     remove: jest.fn((id) => userFactory({ id })),
+    recover: jest.fn((id) => userFactory({ id })),
     permanentRemove: jest.fn((id) => userFactory({ id })),
   };
 
@@ -67,12 +68,12 @@ describe('UsersResolver', () => {
 
   it('should be return a user wit the new data inside', () => {
     const mockUpdateUser = updateUserFactory();
-    expect(mockUsersService.updateUser(mockUpdateUser)).toEqual({
+    expect(mockUsersService.update(mockUpdateUser)).toEqual({
       ...mockUser,
       ...mockUpdateUser,
     });
-    expect(mockUsersService.updateUser).toHaveBeenCalled();
-    expect(mockUsersService.updateUser).toHaveBeenCalledTimes(1);
+    expect(mockUsersService.update).toHaveBeenCalled();
+    expect(mockUsersService.update).toHaveBeenCalledTimes(1);
   });
 
   it('Should be return a user with the same id when removeUser was called', async () => {
@@ -81,6 +82,13 @@ describe('UsersResolver', () => {
     expect(user.id).toBe(userId);
     expect(mockUsersService.remove).toHaveBeenCalled();
     expect(mockUsersService.remove).toHaveBeenCalledTimes(1);
+  });
+  it('Should be return a user with the same id when recoverUser was called', async () => {
+    const userId = faker.datatype.uuid();
+    const user = await resolver.recoverUser(userId);
+    expect(user.id).toBe(userId);
+    expect(mockUsersService.recover).toHaveBeenCalled();
+    expect(mockUsersService.recover).toHaveBeenCalledTimes(1);
   });
   it('Should be return a user with the same id when permanentRemoveUser was called', async () => {
     const userId = faker.datatype.uuid();
