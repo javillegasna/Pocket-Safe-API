@@ -1,17 +1,19 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { GraphQLModule } from '@nestjs/graphql';
 import { INestApplication } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+
+import { join } from 'path';
 import * as request from 'supertest';
+
+import { User } from '../../src/users/models/user.entity';
 import { UsersModule } from '../../src/users/users.module';
+import { Account } from '../../src/accounts/models/account.entity';
 import {
   createUserFactory,
   updateUserFactory,
 } from '../../src/users/common/mock/user.factory';
-import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { join } from 'path';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../../src/users/models/user.entity';
-import { Account } from '../../src/accounts/models/account.entity';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -87,6 +89,7 @@ describe('AppController (e2e)', () => {
 
     const { users } = response.body.data;
 
+    expect(users.length).toBe(1);
     expect(users[0]).toEqual({
       name: mockCreateUserInput.name,
       lastName: mockCreateUserInput.lastName,
@@ -181,7 +184,7 @@ describe('AppController (e2e)', () => {
     expect(recoverUser).toEqual({ id: userId });
   });
 
-  it('/ User Resolver (mutation recoverUser)', async () => {
+  it('/ User Resolver (mutation permanentRemoveUser)', async () => {
     const response = await request(app.getHttpServer())
       .post('/graphql')
       .send({
