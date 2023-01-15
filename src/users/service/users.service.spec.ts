@@ -1,28 +1,27 @@
 import { faker } from '@faker-js/faker';
-import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { User } from '../models/user.entity';
+import { UsersService } from './users.service';
 import {
   createUserFactory,
   updateUserFactory,
   userFactory,
 } from '../common/mock/user.factory';
-import { CreateUserInput } from '../dto/create-user.input';
-import { User } from '../models/user.entity';
-import { UsersService } from './users.service';
 
 describe('UsersService', () => {
   let service: UsersService;
 
-  const mockInputUser: CreateUserInput = createUserFactory();
-  const mockUser: User = userFactory();
+  const mockUser = userFactory();
 
   const mockUserRepository = {
-    save: jest.fn((user) => Promise.resolve(user)),
     find: jest.fn().mockResolvedValue([mockUser]),
+    save: jest.fn((user) => Promise.resolve(user)),
     remove: jest.fn((user) => Promise.resolve(user)),
     restore: jest.fn((user) => Promise.resolve(user)),
+    create: jest.fn((dto) => ({ ...mockUser, ...dto })),
     softRemove: jest.fn((user) => Promise.resolve(user)),
-    create: jest.fn((dto: CreateUserInput) => ({ ...mockUser, ...dto })),
     findOneBy: jest.fn((query) =>
       Promise.resolve({ ...mockUser, id: query.id }),
     ),
@@ -47,6 +46,7 @@ describe('UsersService', () => {
   });
 
   it('Should be return a user when create was called', async () => {
+    const mockInputUser = createUserFactory();
     expect(await service.create(mockInputUser)).toEqual({
       ...mockUser,
       ...mockInputUser,
@@ -73,7 +73,7 @@ describe('UsersService', () => {
     expect(mockUserRepository.findOneBy).toHaveBeenCalledTimes(1);
   });
 
-  it('should be return a user wit the new data inside', async () => {
+  it('should be return a user with the new data inside', async () => {
     const mockUserId = faker.datatype.uuid();
     const mockUpdateUser = updateUserFactory({ id: mockUserId });
     expect(await service.update(mockUserId, mockUpdateUser)).toEqual({
@@ -97,6 +97,7 @@ describe('UsersService', () => {
     expect(mockUserRepository.restore).toHaveBeenCalled();
     expect(mockUserRepository.restore).toHaveBeenCalledTimes(1);
   });
+
   it('Should be return a user with the same id when permanentRemoveUser was called', async () => {
     const userId = faker.datatype.uuid();
     const user = await service.permanentRemove(userId);
