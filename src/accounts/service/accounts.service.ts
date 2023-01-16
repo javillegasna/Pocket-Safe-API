@@ -43,7 +43,14 @@ export class AccountsService {
     const account = await this.accountRepository.findOneBy({ id });
     return this.accountRepository.softRemove(account);
   }
-  async removePermanently(id: string) {
+
+  async recover(id: string): Promise<Account> {
+    await this.accountRepository.restore(id);
+    const account = await this.accountRepository.findOneBy({ id });
+    return account;
+  }
+
+  async permanentRemove(id: string) {
     const account = await this.accountRepository.findOneBy({ id });
     return this.accountRepository.remove(account);
   }

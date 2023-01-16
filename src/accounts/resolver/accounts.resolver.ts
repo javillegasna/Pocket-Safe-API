@@ -57,4 +57,14 @@ export class AccountsResolver {
   removeAccount(@Args('id') id: string) {
     return this.accountsService.remove(id);
   }
+
+  @Mutation(() => Account)
+  recoverAccount(@Args('id') id: string) {
+    return this.accountsService.recover(id);
+  }
+
+  @Mutation(() => Account)
+  permanentRemoveAccount(@Args('id') id: string) {
+    return this.accountsService.permanentRemove(id);
+  }
 }

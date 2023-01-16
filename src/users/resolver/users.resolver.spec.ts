@@ -1,20 +1,20 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { User } from '../models/user.entity';
+
+import { AccountsService } from 'src/accounts/service/accounts.service';
+
 import { UsersResolver } from './users.resolver';
 import { UsersService } from '../service/users.service';
-import { CreateUserInput } from '../dto/create-user.input';
 import {
   createUserFactory,
   updateUserFactory,
   userFactory,
 } from '../common/mock/user.factory';
-import { AccountsService } from 'src/accounts/service/accounts.service';
+
 describe('UsersResolver', () => {
   let resolver: UsersResolver;
 
-  const mockInputUser: CreateUserInput = createUserFactory();
-  const mockUser: User = userFactory();
+  const mockUser = userFactory();
 
   const mockUsersService = {
     create: jest.fn((dto) => ({ ...mockUser, ...dto })),
@@ -44,6 +44,7 @@ describe('UsersResolver', () => {
   });
 
   it('Should be return a user when createUser was called', () => {
+    const mockInputUser = createUserFactory();
     expect(resolver.createUser(mockInputUser)).toEqual({
       ...mockUser,
       ...mockInputUser,
@@ -83,6 +84,7 @@ describe('UsersResolver', () => {
     expect(mockUsersService.remove).toHaveBeenCalled();
     expect(mockUsersService.remove).toHaveBeenCalledTimes(1);
   });
+
   it('Should be return a user with the same id when recoverUser was called', async () => {
     const userId = faker.datatype.uuid();
     const user = await resolver.recoverUser(userId);
@@ -90,6 +92,7 @@ describe('UsersResolver', () => {
     expect(mockUsersService.recover).toHaveBeenCalled();
     expect(mockUsersService.recover).toHaveBeenCalledTimes(1);
   });
+
   it('Should be return a user with the same id when permanentRemoveUser was called', async () => {
     const userId = faker.datatype.uuid();
     const user = await resolver.permanentRemoveUser(userId);
