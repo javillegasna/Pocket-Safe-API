@@ -7,6 +7,9 @@ export class UpdateAccountInput extends PartialType(CreateAccountInput) {
   @Field()
   id: string;
 
+  @Field()
+  userId: string;
+
   @Field({ nullable: true })
   name?: string;
 

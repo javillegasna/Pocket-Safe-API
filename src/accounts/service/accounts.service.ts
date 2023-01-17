@@ -52,6 +52,7 @@ export class AccountsService {
 
   async permanentRemove(id: string) {
     const account = await this.accountRepository.findOneBy({ id });
-    return this.accountRepository.remove(account);
+    await this.accountRepository.remove(account);
+    return { ...account, id };
   }
 }
