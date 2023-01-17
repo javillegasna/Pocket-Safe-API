@@ -37,4 +37,4 @@ jobs:
       run: npm run test:cov:ci
 
     - name: Jest Coverage Comment
-        uses: MishaKav/jest-coverage-comment@main
+      uses: MishaKav/jest-coverage-comment@main
