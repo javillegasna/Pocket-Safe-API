@@ -15,7 +15,7 @@ import {
   updateUserFactory,
 } from '../../src/users/common/mock/user.factory';
 
-describe('AppController (e2e)', () => {
+describe('UserModule (e2e)', () => {
   let app: INestApplication;
   let moduleFixture: TestingModule;
   let userId: string;

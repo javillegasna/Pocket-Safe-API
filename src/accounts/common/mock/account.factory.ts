@@ -13,7 +13,7 @@ interface IAccount extends ICreateAccount {
   user?: User;
 }
 
-interface IUpdateAccount extends Omit<ICreateAccount, 'userId'> {
+interface IUpdateAccount extends ICreateAccount {
   id?: string;
 }
 
