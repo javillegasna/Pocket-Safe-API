@@ -8,21 +8,22 @@ import { join } from 'path';
 import * as request from 'supertest';
 
 import { UsersModule } from '../../src/users/users.module';
-import { AccountsModule } from 'src/accounts/accounts.module';
+import { CategoriesModule } from 'src/categories/categories.module';
 import { createUserFactory } from '../../src/users/common/mock/user.factory';
-import { CreateAccountInput } from 'src/accounts/dto/create-account.input';
+
+import { CreateCategoryInput } from 'src/categories/dto/create-category.input';
 import {
-  createAccountFactory,
-  updateAccountFactory,
-} from 'src/accounts/common/mock/account.factory';
+  createCategoryFactory,
+  updateCategoryFactory,
+} from 'src/categories/common/mock/category.factory';
 
 describe('AccountModule (e2e)', () => {
   let app: INestApplication;
   let moduleFixture: TestingModule;
 
   let userId: string;
-  let accountId: string;
-  let mockCreateAccount: CreateAccountInput;
+  let categoryId: string;
+  let mockCreateCategory: CreateCategoryInput;
 
   beforeAll(async () => {
     moduleFixture = await Test.createTestingModule({
@@ -38,7 +39,7 @@ describe('AccountModule (e2e)', () => {
           autoSchemaFile: join(process.cwd(), 'src/schema.gpl'),
         }),
         UsersModule,
-        AccountsModule,
+        CategoriesModule,
       ],
     }).compile();
 
@@ -78,47 +79,44 @@ describe('AccountModule (e2e)', () => {
     });
   });
 
-  it('/ Account Resolver (mutation create)', async () => {
-    mockCreateAccount = createAccountFactory({ userId });
+  it('/ Category Resolver (mutation create)', async () => {
+    mockCreateCategory = createCategoryFactory({ userId });
     const response = await request(app.getHttpServer())
       .post('/graphql')
       .send({
         query: `
-        mutation CreateAccount($createAccountInput: CreateAccountInput!) {
-          createAccount(createAccountInput: $createAccountInput) {
+        mutation CreateCategory($createCategoryInput: CreateCategoryInput!) {
+          createCategory(createCategoryInput: $createCategoryInput) {
             userId,
-            type,
-            name,
+            categoryName,
             icon,
             id,
           }
         }`,
-        variables: { createAccountInput: mockCreateAccount },
+        variables: { createCategoryInput: mockCreateCategory },
       })
       .expect(200);
 
-    const { createAccount } = response.body.data;
-    accountId = createAccount.id;
+    const { createCategory } = response.body.data;
+    categoryId = createCategory.id;
 
-    expect(createAccount).toEqual({
-      name: mockCreateAccount.name,
-      type: mockCreateAccount.type,
-      icon: mockCreateAccount.icon,
-      userId: mockCreateAccount.userId,
-      id: accountId,
+    expect(createCategory).toEqual({
+      categoryName: mockCreateCategory.categoryName,
+      icon: mockCreateCategory.icon,
+      userId: mockCreateCategory.userId,
+      id: categoryId,
     });
   });
 
-  it('/ Account Resolver (query findAll)', async () => {
+  it('/ Category Resolver (query findAll)', async () => {
     const response = await request(app.getHttpServer())
       .post('/graphql')
       .send({
         query: `
-        query Accounts {
-          accounts {
+        query Categories {
+          categories {
             userId,
-            type,
-            name,
+            categoryName,
             icon,
             id,
           }
@@ -126,145 +124,140 @@ describe('AccountModule (e2e)', () => {
       })
       .expect(200);
 
-    const { accounts } = response.body.data;
+    const { categories } = response.body.data;
 
-    expect(accounts.length).toBe(1);
-    expect(accounts[0]).toEqual({
-      name: mockCreateAccount.name,
-      type: mockCreateAccount.type,
-      icon: mockCreateAccount.icon,
-      userId: mockCreateAccount.userId,
-      id: accountId,
+    expect(categories.length).toBe(1);
+    expect(categories[0]).toEqual({
+      categoryName: mockCreateCategory.categoryName,
+      icon: mockCreateCategory.icon,
+      userId: mockCreateCategory.userId,
+      id: categoryId,
     });
   });
 
-  it('/ Account Resolver (query findOne)', async () => {
+  it('/ Category Resolver (query findOne)', async () => {
     const response = await request(app.getHttpServer())
       .post('/graphql')
       .send({
         query: `
-        query Account($accountId: String!) {
-          account(id: $accountId) {
+        query Categories($categoryId: String!) {
+          category(id: $categoryId) {
             userId,
-            type,
-            name,
+            categoryName,
             icon,
             id,
           }
         }`,
-        variables: { accountId },
+        variables: { categoryId },
       })
       .expect(200);
 
-    const { account } = response.body.data;
+    const { category } = response.body.data;
 
-    expect(account).toEqual({
-      name: mockCreateAccount.name,
-      type: mockCreateAccount.type,
-      icon: mockCreateAccount.icon,
-      userId: mockCreateAccount.userId,
-      id: accountId,
+    expect(category).toEqual({
+      categoryName: mockCreateCategory.categoryName,
+      icon: mockCreateCategory.icon,
+      userId: mockCreateCategory.userId,
+      id: categoryId,
     });
   });
 
-  it('/ Account Resolver (mutation updateAccount)', async () => {
-    const mockUpdateAccountInput = updateAccountFactory({
-      id: accountId,
+  it('/ Category Resolver (mutation updateCategory)', async () => {
+    const mockUpdateCategoryInput = updateCategoryFactory({
+      id: categoryId,
       userId,
     });
     const response = await request(app.getHttpServer())
       .post('/graphql')
       .send({
         query: `
-        mutation Mutation($updateAccountInput: UpdateAccountInput!) {
-          updateAccount(updateAccountInput: $updateAccountInput) {
+        mutation Mutation($updateCategoryInput: UpdateCategoryInput!) {
+          updateCategory(updateCategoryInput: $updateCategoryInput) {
             userId,
-            type,
-            name,
+            categoryName,
             icon,
             id,
           }
         }`,
-        variables: { updateAccountInput: mockUpdateAccountInput },
+        variables: { updateCategoryInput: mockUpdateCategoryInput },
       })
       .expect(200);
 
-    const { updateAccount } = response.body.data;
+    const { updateCategory } = response.body.data;
 
-    expect(updateAccount).toEqual({
-      name: mockUpdateAccountInput.name,
-      type: mockUpdateAccountInput.type,
-      icon: mockUpdateAccountInput.icon,
-      userId: mockUpdateAccountInput.userId,
-      id: mockUpdateAccountInput.id,
+    expect(updateCategory).toEqual({
+      categoryName: mockUpdateCategoryInput.categoryName,
+      icon: mockUpdateCategoryInput.icon,
+      userId: mockUpdateCategoryInput.userId,
+      id: mockUpdateCategoryInput.id,
     });
   });
 
-  it('/ Account Resolver (mutation removeAccount)', async () => {
+  it('/ Category Resolver (mutation removeCategory)', async () => {
     const response = await request(app.getHttpServer())
       .post('/graphql')
       .send({
         query: `
-        mutation($removeAccountId: String!){
-          removeAccount(id: $removeAccountId) {
+        mutation($removeCategoryId: String!){
+          removeCategory(id: $removeCategoryId) {
             userId,
             id,
           }
         }`,
-        variables: { removeAccountId: accountId },
+        variables: { removeCategoryId: categoryId },
       })
       .expect(200);
 
-    const { removeAccount } = response.body.data;
+    const { removeCategory } = response.body.data;
 
-    expect(removeAccount).toEqual({
-      id: accountId,
+    expect(removeCategory).toEqual({
+      id: categoryId,
       userId,
     });
   });
 
-  it('/ Account Resolver (mutation recoverAccount)', async () => {
+  it('/ Category Resolver (mutation recoverCategory)', async () => {
     const response = await request(app.getHttpServer())
       .post('/graphql')
       .send({
         query: `
-        mutation Mutation($recoverAccountId: String!) {
-          recoverAccount(id: $recoverAccountId) {
+        mutation Mutation($recoverCategoryId: String!) {
+          recoverCategory(id: $recoverCategoryId) {
             userId
             id
           }
         }`,
-        variables: { recoverAccountId: accountId },
+        variables: { recoverCategoryId: categoryId },
       })
       .expect(200);
 
-    const { recoverAccount } = response.body.data;
+    const { recoverCategory } = response.body.data;
 
-    expect(recoverAccount).toEqual({
-      id: accountId,
+    expect(recoverCategory).toEqual({
+      id: categoryId,
       userId,
     });
   });
 
-  it('/ Account Resolver (mutation permanentRemoveAccount)', async () => {
+  it('/ Category Resolver (mutation permanentRemoveCategory)', async () => {
     const response = await request(app.getHttpServer())
       .post('/graphql')
       .send({
         query: `
-        mutation Mutation($permanentRemoveAccountId: String!) {
-          permanentRemoveAccount(id: $permanentRemoveAccountId) {
+        mutation Mutation($permanentRemoveCategoryId: String!) {
+          permanentRemoveCategory(id: $permanentRemoveCategoryId) {
             userId,
             id,
           }
         }`,
-        variables: { permanentRemoveAccountId: accountId },
+        variables: { permanentRemoveCategoryId: categoryId },
       })
       .expect(200);
 
-    const { permanentRemoveAccount } = response.body.data;
+    const { permanentRemoveCategory } = response.body.data;
 
-    expect(permanentRemoveAccount).toEqual({
-      id: accountId,
+    expect(permanentRemoveCategory).toEqual({
+      id: categoryId,
       userId,
     });
   });
