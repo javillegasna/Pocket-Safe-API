@@ -20,7 +20,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'pocketSafe.sqlite',
-      entities: [__dirname + '/**/*.entity{.ts,.js} '],
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
     UsersModule,

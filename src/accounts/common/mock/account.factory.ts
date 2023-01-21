@@ -42,7 +42,6 @@ export function accountFactory({ ...args }: IAccount = {}) {
 
 export function updateAccountFactory({ ...args }: IUpdateAccount = {}) {
   const createAccount = createAccountFactory();
-  delete createAccount.userId;
   const updateAccount: UpdateAccountInput = {
     id: faker.datatype.uuid(),
     ...createAccount,

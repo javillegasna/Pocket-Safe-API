@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Account } from 'src/accounts/models/account.entity';
+import { Category } from 'src/categories/models/category.entity';
 
 @Entity()
 @ObjectType()
@@ -32,6 +33,12 @@ export class User {
   @OneToMany(() => Account, (account) => account.user, { onDelete: 'CASCADE' })
   @Field(() => [Account], { nullable: true })
   accounts: Account[];
+
+  @OneToMany(() => Category, (category) => category.user, {
+    onDelete: 'CASCADE',
+  })
+  @Field(() => [Category], { nullable: true })
+  categories: Category[];
 
   @Field()
   @Column()

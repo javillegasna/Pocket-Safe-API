@@ -30,6 +30,7 @@ export function userFactory({ ...args }: IUser = {}) {
     id: faker.datatype.uuid(),
     ...createUserFactory(),
     accounts: [],
+    categories: [],
     ...args,
   };
   return user;

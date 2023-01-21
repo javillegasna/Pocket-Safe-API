@@ -7,9 +7,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import * as request from 'supertest';
 
-import { User } from '../../src/users/models/user.entity';
 import { UsersModule } from '../../src/users/users.module';
-import { Account } from '../../src/accounts/models/account.entity';
 import {
   createUserFactory,
   updateUserFactory,
@@ -27,7 +25,7 @@ describe('UserModule (e2e)', () => {
         TypeOrmModule.forRoot({
           type: 'sqlite',
           database: ':memory:',
-          entities: [User, Account],
+          entities: [join(process.cwd(), 'src/**/*.entity{.ts,.js}')],
           synchronize: true,
         }),
         GraphQLModule.forRoot<ApolloDriverConfig>({
