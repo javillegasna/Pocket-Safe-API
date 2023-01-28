@@ -6,10 +6,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  ManyToMany,
 } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { AccountType } from '../common/accounts.enums';
 import { User } from 'src/users/models/user.entity';
+import { Transaction } from 'src/transactions/models/transaction.entity';
 
 @Entity()
 @ObjectType()
@@ -41,6 +43,12 @@ export class Account {
   @ManyToOne(() => User, (user) => user.accounts, { onDelete: 'CASCADE' })
   @Field(() => User)
   user: User;
+
+  @Field(() => [Transaction], { nullable: true })
+  @ManyToMany(() => Transaction, (transaction) => transaction.accounts, {
+    onDelete: 'CASCADE',
+  })
+  transactions: Transaction[];
 
   @Field()
   @Column({ nullable: true })

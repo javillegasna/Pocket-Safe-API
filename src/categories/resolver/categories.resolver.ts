@@ -12,7 +12,6 @@ import { CreateCategoryInput } from '../dto/create-category.input';
 import { UpdateCategoryInput } from '../dto/update-category.input';
 import { UsersService } from 'src/users/service/users.service';
 import { User } from 'src/users/models/user.entity';
-import { Account } from 'src/accounts/models/account.entity';
 
 @Resolver(() => Category)
 export class CategoriesResolver {
@@ -49,7 +48,7 @@ export class CategoriesResolver {
   }
 
   @ResolveField(() => User)
-  user(@Parent() category: Account): Promise<User> {
+  user(@Parent() category: Category): Promise<User> {
     return this.userService.findOne(category.userId);
   }
 

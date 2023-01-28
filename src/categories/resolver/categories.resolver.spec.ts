@@ -8,7 +8,6 @@ import {
   updateCategoryFactory,
 } from '../common/mock/category.factory';
 import { faker } from '@faker-js/faker';
-import { accountFactory } from 'src/accounts/common/mock/account.factory';
 import { userFactory } from 'src/users/common/mock/user.factory';
 
 describe('CategoriesResolver', () => {
@@ -89,8 +88,8 @@ describe('CategoriesResolver', () => {
   it('Should be return an user with the same id when user was called', async () => {
     const userId = faker.datatype.uuid();
     const mockUser = userFactory({ id: userId });
-    const account = accountFactory({ userId, user: mockUser });
-    const user = await resolver.user(account);
+    const category = categoryFactory({ userId, user: mockUser });
+    const user = await resolver.user(category);
     expect(user.id).toBe(userId);
     expect(mockCategoryService.findOne).toHaveBeenCalled();
     expect(mockCategoryService.findOne).toHaveBeenCalledTimes(1);

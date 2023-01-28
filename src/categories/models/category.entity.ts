@@ -1,4 +1,5 @@
 import { ObjectType, Field } from '@nestjs/graphql';
+import { Transaction } from 'src/transactions/models/transaction.entity';
 import { User } from 'src/users/models/user.entity';
 import {
   Column,
@@ -6,6 +7,7 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -32,6 +34,12 @@ export class Category {
   @ManyToOne(() => User, (user) => user.categories, { onDelete: 'CASCADE' })
   @Field(() => User)
   user: User;
+
+  @OneToMany(() => Transaction, (transaction) => transaction, {
+    onDelete: 'CASCADE',
+  })
+  @Field(() => [User])
+  transactions: Transaction[];
 
   @Field()
   @Column()
