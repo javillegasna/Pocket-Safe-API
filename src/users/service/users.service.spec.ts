@@ -15,19 +15,20 @@ describe('UsersService', () => {
 
   const mockUser = userFactory();
 
-  const mockUserRepository = {
-    find: jest.fn().mockResolvedValue([mockUser]),
-    save: jest.fn((user) => Promise.resolve(user)),
-    remove: jest.fn((user) => Promise.resolve(user)),
-    restore: jest.fn((user) => Promise.resolve(user)),
-    create: jest.fn((dto) => ({ ...mockUser, ...dto })),
-    softRemove: jest.fn((user) => Promise.resolve(user)),
-    findOneBy: jest.fn((query) =>
-      Promise.resolve({ ...mockUser, id: query.id }),
-    ),
-  };
+  let mockUserRepository;
 
   beforeEach(async () => {
+    mockUserRepository = {
+      find: jest.fn().mockResolvedValue([mockUser]),
+      save: jest.fn((user) => Promise.resolve(user)),
+      remove: jest.fn((user) => Promise.resolve(user)),
+      restore: jest.fn((user) => Promise.resolve(user)),
+      create: jest.fn((dto) => ({ ...mockUser, ...dto })),
+      softRemove: jest.fn((user) => Promise.resolve(user)),
+      findOneBy: jest.fn((query) =>
+        Promise.resolve({ ...mockUser, id: query.id }),
+      ),
+    };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
@@ -88,12 +89,16 @@ describe('UsersService', () => {
     expect(user.id).toBe(userId);
     expect(mockUserRepository.softRemove).toHaveBeenCalled();
     expect(mockUserRepository.softRemove).toHaveBeenCalledTimes(1);
+    expect(mockUserRepository.findOneBy).toHaveBeenCalled();
+    expect(mockUserRepository.findOneBy).toHaveBeenCalledTimes(1);
   });
 
   it('Should be return a user with the same id when recoverUser was called', async () => {
     const userId = faker.datatype.uuid();
     const user = await service.recover(userId);
     expect(user.id).toBe(userId);
+    expect(mockUserRepository.findOneBy).toHaveBeenCalled();
+    expect(mockUserRepository.findOneBy).toHaveBeenCalledTimes(1);
     expect(mockUserRepository.restore).toHaveBeenCalled();
     expect(mockUserRepository.restore).toHaveBeenCalledTimes(1);
   });
