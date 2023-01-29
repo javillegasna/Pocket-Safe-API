@@ -15,19 +15,20 @@ describe('AccountsService', () => {
 
   const mockAccount = accountFactory();
 
-  const mockAccountRepository = {
-    find: jest.fn().mockResolvedValue([mockAccount]),
-    save: jest.fn((account) => Promise.resolve(account)),
-    remove: jest.fn((account) => Promise.resolve(account)),
-    create: jest.fn((dto) => ({ ...mockAccount, ...dto })),
-    restore: jest.fn((account) => Promise.resolve(account)),
-    softRemove: jest.fn((account) => Promise.resolve(account)),
-    findOneBy: jest.fn((query) =>
-      Promise.resolve({ ...mockAccount, id: query.id }),
-    ),
-  };
+  let mockAccountRepository;
 
   beforeEach(async () => {
+    mockAccountRepository = {
+      find: jest.fn().mockResolvedValue([mockAccount]),
+      save: jest.fn((account) => Promise.resolve(account)),
+      remove: jest.fn((account) => Promise.resolve(account)),
+      create: jest.fn((dto) => ({ ...mockAccount, ...dto })),
+      restore: jest.fn((account) => Promise.resolve(account)),
+      softRemove: jest.fn((account) => Promise.resolve(account)),
+      findOneBy: jest.fn((query) =>
+        Promise.resolve({ ...mockAccount, id: query.id }),
+      ),
+    };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AccountsService,
@@ -86,6 +87,8 @@ describe('AccountsService', () => {
     const accountId = faker.datatype.uuid();
     const account = await service.remove(accountId);
     expect(account.id).toBe(accountId);
+    expect(mockAccountRepository.findOneBy).toHaveBeenCalled();
+    expect(mockAccountRepository.findOneBy).toHaveBeenCalledTimes(1);
     expect(mockAccountRepository.softRemove).toHaveBeenCalled();
     expect(mockAccountRepository.softRemove).toHaveBeenCalledTimes(1);
   });
@@ -94,6 +97,8 @@ describe('AccountsService', () => {
     const accountId = faker.datatype.uuid();
     const account = await service.recover(accountId);
     expect(account.id).toBe(accountId);
+    expect(mockAccountRepository.findOneBy).toHaveBeenCalled();
+    expect(mockAccountRepository.findOneBy).toHaveBeenCalledTimes(1);
     expect(mockAccountRepository.restore).toHaveBeenCalled();
     expect(mockAccountRepository.restore).toHaveBeenCalledTimes(1);
   });
