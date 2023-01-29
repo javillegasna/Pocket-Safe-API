@@ -34,6 +34,7 @@ export function accountFactory({ ...args }: IAccount = {}) {
   const account: Account = {
     id: faker.datatype.uuid(),
     user: userFactory({ id: userId }),
+    transactions: [],
     ...createAccount,
     ...args,
   };

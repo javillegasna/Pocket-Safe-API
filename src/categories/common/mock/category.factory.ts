@@ -32,6 +32,7 @@ export function categoryFactory({ ...args }: ICategory = {}) {
   const category: Category = {
     id: faker.datatype.uuid(),
     user: userFactory(),
+    transactions: [],
     ...createCategory,
     ...args,
   };
