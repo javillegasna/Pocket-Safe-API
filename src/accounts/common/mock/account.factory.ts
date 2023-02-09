@@ -3,19 +3,13 @@ import { CreateAccountInput } from 'src/accounts/dto/create-account.input';
 import { UpdateAccountInput } from 'src/accounts/dto/update-account.input';
 import { Account } from 'src/accounts/models/account.entity';
 import { userFactory } from 'src/users/common/mock/user.factory';
-import { User } from 'src/users/models/user.entity';
 import { AccountType } from '../accounts.enums';
 
 type ICreateAccount = Partial<CreateAccountInput>;
 
-interface IAccount extends ICreateAccount {
-  id?: string;
-  user?: User;
-}
+type IAccount = Partial<Account>;
 
-interface IUpdateAccount extends ICreateAccount {
-  id?: string;
-}
+type IUpdateAccount = Partial<UpdateAccountInput>;
 
 export function createAccountFactory({ ...args }: ICreateAccount = {}) {
   const createAccount: CreateAccountInput = {
@@ -33,8 +27,9 @@ export function accountFactory({ ...args }: IAccount = {}) {
   const createAccount = createAccountFactory({ userId });
   const account: Account = {
     id: faker.datatype.uuid(),
-    user: userFactory({ id: userId }),
+    totalAmount: 0,
     transactions: [],
+    user: userFactory({ id: userId }),
     ...createAccount,
     ...args,
   };
@@ -45,6 +40,7 @@ export function updateAccountFactory({ ...args }: IUpdateAccount = {}) {
   const createAccount = createAccountFactory();
   const updateAccount: UpdateAccountInput = {
     id: faker.datatype.uuid(),
+    totalAmount: 0,
     ...createAccount,
     ...args,
   };

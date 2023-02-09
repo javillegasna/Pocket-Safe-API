@@ -8,21 +8,26 @@ import { AccountsModule } from './accounts/accounts.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
+import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions';
+
+const sqliteConfig: SqliteConnectionOptions = {
+  type: 'sqlite',
+  database: 'pocketSafe.sqlite',
+  entities: [__dirname + '/**/*.entity{.ts,.js}'],
+  synchronize: true,
+};
+
+const apolloConfig: ApolloDriverConfig = {
+  driver: ApolloDriver,
+  autoSchemaFile: join(process.cwd(), 'src/schema.gpl'),
+  playground: false,
+  plugins: [ApolloServerPluginLandingPageLocalDefault],
+};
 
 @Module({
   imports: [
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gpl'),
-      playground: false,
-      plugins: [ApolloServerPluginLandingPageLocalDefault],
-    }),
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'pocketSafe.sqlite',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
-    }),
+    GraphQLModule.forRoot(apolloConfig),
+    TypeOrmModule.forRoot(sqliteConfig),
     UsersModule,
     AccountsModule,
     TransactionsModule,
