@@ -1,4 +1,4 @@
-import { InputType, Field, PartialType } from '@nestjs/graphql';
+import { InputType, Field, PartialType, Float } from '@nestjs/graphql';
 import { AccountType } from '../common/accounts.enums';
 import { CreateAccountInput } from './create-account.input';
 
@@ -9,6 +9,9 @@ export class UpdateAccountInput extends PartialType(CreateAccountInput) {
 
   @Field()
   userId: string;
+
+  @Field(() => Float)
+  totalAmount?: number;
 
   @Field({ nullable: true })
   name?: string;

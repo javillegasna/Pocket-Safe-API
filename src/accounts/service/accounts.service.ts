@@ -12,7 +12,10 @@ export class AccountsService {
     private accountRepository: Repository<Account>,
   ) {}
   create(createAccountInput: CreateAccountInput): Promise<Account> {
-    const account = this.accountRepository.create(createAccountInput);
+    const account = this.accountRepository.create({
+      ...createAccountInput,
+      totalAmount: 0,
+    });
     return this.accountRepository.save(account);
   }
 

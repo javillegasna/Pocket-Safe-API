@@ -8,11 +8,14 @@ import {
   DeleteDateColumn,
   ManyToMany,
 } from 'typeorm';
-import { ObjectType, Field } from '@nestjs/graphql';
+
+import { ObjectType, Field, Float } from '@nestjs/graphql';
+
 import { AccountType } from '../common/accounts.enums';
+
 import { User } from 'src/users/models/user.entity';
 import { Transaction } from 'src/transactions/models/transaction.entity';
-
+import { ColumnNumericTransformer } from 'src/.common/transformers/numeric.transformer';
 @Entity()
 @ObjectType()
 export class Account {
@@ -24,6 +27,10 @@ export class Account {
   @Field()
   name: string;
 
+  @Column()
+  @Field()
+  icon: string;
+
   @Column({
     type: 'varchar',
     enum: AccountType,
@@ -32,9 +39,13 @@ export class Account {
   @Field()
   type: AccountType;
 
-  @Column()
-  @Field()
-  icon: string;
+  @Field(() => Float)
+  @Column('numeric', {
+    precision: 2,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+  })
+  totalAmount: number;
 
   @Column()
   @Field()

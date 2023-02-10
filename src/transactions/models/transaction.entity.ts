@@ -1,6 +1,3 @@
-import { ObjectType, Field, Float } from '@nestjs/graphql';
-import { Account } from 'src/accounts/models/account.entity';
-import { Category } from 'src/categories/models/category.entity';
 import {
   Column,
   CreateDateColumn,
@@ -12,15 +9,14 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import { ObjectType, Field, Float } from '@nestjs/graphql';
+
 import { TransactionType } from '../common/transactions.enums';
-class ColumnNumericTransformer {
-  to(data: number): number {
-    return data;
-  }
-  from(data: string): number {
-    return parseFloat(data);
-  }
-}
+
+import { Account } from 'src/accounts/models/account.entity';
+import { Category } from 'src/categories/models/category.entity';
+import { ColumnNumericTransformer } from 'src/.common/transformers/numeric.transformer';
 
 @Entity()
 @ObjectType()
