@@ -67,7 +67,7 @@ describe('AccountsResolver', () => {
     expect(mockAccountService.findOne).toHaveBeenCalledTimes(1);
   });
 
-  it('should be return a user wit the new data inside', () => {
+  it('should be return an account wit the new data inside', () => {
     const mockUpdateAccount = updateAccountFactory();
     expect(mockAccountService.update(mockUpdateAccount)).toEqual({
       ...mockAccount,

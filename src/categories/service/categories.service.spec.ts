@@ -103,7 +103,7 @@ describe('CategoriesService', () => {
     expect(mockCategoryRepository.restore).toHaveBeenCalledTimes(1);
   });
 
-  it('Should be return a user with the same id when permanentRemoveUser was called', async () => {
+  it('Should be return a category with the same id when permanentRemoveCategory was called', async () => {
     const categoryId = faker.datatype.uuid();
     const category = await service.permanentRemove(categoryId);
     expect(category.id).toBe(categoryId);

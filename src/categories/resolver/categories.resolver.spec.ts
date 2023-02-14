@@ -85,7 +85,7 @@ describe('CategoriesResolver', () => {
     expect(mockCategoryService.remove).toHaveBeenCalled();
     expect(mockCategoryService.remove).toHaveBeenCalledTimes(1);
   });
-  it('Should be return an user with the same id when user was called', async () => {
+  it('Should be return an user when is sended a category with a user id inside', async () => {
     const userId = faker.datatype.uuid();
     const mockUser = userFactory({ id: userId });
     const category = categoryFactory({ userId, user: mockUser });
