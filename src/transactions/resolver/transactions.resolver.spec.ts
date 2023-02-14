@@ -65,14 +65,14 @@ describe('TransactionsResolver', () => {
   });
 
   it('Should be return a transaction with the same id that was send', async () => {
-    const TransactionId = faker.datatype.uuid();
-    const transaction = await resolver.findOne(TransactionId);
-    expect(transaction.id).toBe(TransactionId);
+    const transactionId = faker.datatype.uuid();
+    const transaction = await resolver.findOne(transactionId);
+    expect(transaction.id).toBe(transactionId);
     expect(mockTransactionService.findOne).toHaveBeenCalled();
     expect(mockTransactionService.findOne).toHaveBeenCalledTimes(1);
   });
 
-  it('should be return a transaction wit the new data inside', () => {
+  it('Should be return a transaction wit the new data inside', () => {
     const mockUpdateTransaction = updateTransactionFactory();
     expect(resolver.updateTransaction(mockUpdateTransaction)).toEqual({
       ...mockTransaction,
@@ -111,7 +111,7 @@ describe('TransactionsResolver', () => {
     expect(mockTransactionService.recover).toHaveBeenCalledTimes(1);
   });
 
-  it('Should be return a transaction with the same id when permanentRemoveTransaction was called', async () => {
+  it('Should be return a transaction when revive an id', async () => {
     const transactionId = faker.datatype.uuid();
     const transaction = await resolver.permanentRemoveTransaction(
       transactionId,
