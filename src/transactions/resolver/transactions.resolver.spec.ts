@@ -9,16 +9,29 @@ import {
 import { categoryFactory } from 'src/categories/common/mock/category.factory';
 import { CategoriesService } from 'src/categories/service/categories.service';
 import { faker } from '@faker-js/faker';
+import { AccountsService } from 'src/accounts/service/accounts.service';
+import { accountFactory } from 'src/accounts/common/mock/account.factory';
 
 describe('TransactionsResolver', () => {
   let resolver: TransactionsResolver;
   const mockTransaction = transactionFactory();
-
+  const mockAccount = accountFactory();
   const mockCategoryService = {
     findOne: jest.fn((id) => categoryFactory({ id })),
   };
+  const mockAccountService = {
+    addIncomingAmount: jest.fn((id: string, totalAmount: number) => ({
+      ...mockAccount,
+      id,
+      totalAmount,
+    })),
+  };
   const mockTransactionService = {
-    create: jest.fn((dto) => ({ ...mockTransaction, ...dto })),
+    create: jest.fn((dto, updatedAccount) => ({
+      ...mockTransaction,
+      ...dto,
+      accounts: [updatedAccount],
+    })),
     findAll: jest.fn(() => [mockTransaction]),
     findOne: jest.fn((id) => transactionFactory({ id })),
     update: jest.fn((id, dto) => ({ ...mockTransaction, ...dto, id })),
@@ -38,6 +51,10 @@ describe('TransactionsResolver', () => {
           provide: CategoriesService,
           useValue: mockCategoryService,
         },
+        {
+          provide: AccountsService,
+          useValue: mockAccountService,
+        },
       ],
     }).compile();
 
@@ -48,11 +65,15 @@ describe('TransactionsResolver', () => {
     expect(resolver).toBeDefined();
   });
 
-  it('Should be return a Transaction when createCategory was called', () => {
-    const mockInputTransaction = createTransactionFactory();
-    expect(resolver.createTransaction(mockInputTransaction)).toEqual({
+  it('Should be return a Transaction when createCategory was called', async () => {
+    const mockInputTransaction = createTransactionFactory({
+      accountId: mockAccount.id,
+      amount: mockAccount.totalAmount,
+    });
+    expect(await resolver.createTransaction(mockInputTransaction)).toEqual({
       ...mockTransaction,
       ...mockInputTransaction,
+      accounts: [mockAccount],
     });
     expect(mockTransactionService.create).toHaveBeenCalled();
     expect(mockTransactionService.create).toHaveBeenCalledTimes(1);
