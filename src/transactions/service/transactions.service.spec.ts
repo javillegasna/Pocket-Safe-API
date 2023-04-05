@@ -61,10 +61,10 @@ describe('TransactionsService', () => {
 
   it('Should be return an Transaction when create was called', async () => {
     const mockInputTransaction = createTransactionFactory();
-    expect(await service.create(mockInputTransaction)).toEqual({
+    expect(await service.create(mockInputTransaction, mockAccount)).toEqual({
       ...mockTransaction,
       ...mockInputTransaction,
-      accounts: [{ ...mockAccount, id: mockInputTransaction.accountId }],
+      accounts: [{ ...mockAccount }],
     });
     expect(mockTransactionRepository.create).toHaveBeenCalled();
     expect(mockTransactionRepository.create).toHaveBeenCalledTimes(1);

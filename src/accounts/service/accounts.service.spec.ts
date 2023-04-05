@@ -9,11 +9,12 @@ import {
   createAccountFactory,
   updateAccountFactory,
 } from '../common/mock/account.factory';
+import { BadRequestException } from '@nestjs/common';
 
 describe('AccountsService', () => {
   let service: AccountsService;
 
-  const mockAccount = accountFactory();
+  const mockAccount = accountFactory({ totalAmount: 1000 });
 
   let mockAccountRepository;
 
@@ -51,6 +52,7 @@ describe('AccountsService', () => {
     expect(await service.create(mockInputAccount)).toEqual({
       ...mockAccount,
       ...mockInputAccount,
+      totalAmount: 0,
     });
     expect(mockAccountRepository.create).toHaveBeenCalled();
     expect(mockAccountRepository.create).toHaveBeenCalledTimes(1);
@@ -109,5 +111,29 @@ describe('AccountsService', () => {
     expect(account.id).toBe(accountId);
     expect(mockAccountRepository.remove).toHaveBeenCalled();
     expect(mockAccountRepository.remove).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should be return an account with amount increase', async () => {
+    const accountId = faker.datatype.uuid();
+    const amount = faker.datatype.number();
+    const account = await service.addIncomingAmount(accountId, amount);
+    expect(account.totalAmount).toBe(mockAccount.totalAmount + amount);
+    expect(mockAccountRepository.findOneBy).toHaveBeenCalled();
+    expect(mockAccountRepository.findOneBy).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should be return an account with amount decrease', async () => {
+    const accountId = faker.datatype.uuid();
+    const amount = faker.datatype.number(100);
+    const account = await service.subtractOutgoingAmount(accountId, amount);
+    expect(account.totalAmount).toBe(mockAccount.totalAmount - amount);
+  });
+
+  it('Should be trow error if the amount is higher than totalAmount', async () => {
+    const accountId = faker.datatype.uuid();
+    const amount = 2000;
+    await expect(() =>
+      service.subtractOutgoingAmount(accountId, amount),
+    ).rejects.toThrowError(BadRequestException);
   });
 });

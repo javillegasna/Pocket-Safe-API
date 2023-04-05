@@ -17,16 +17,14 @@ export class TransactionsService {
   ) {}
   async create(
     createTransactionInput: CreateTransactionInput,
+    updatedAccount: Account,
   ): Promise<Transaction> {
     const transaction = await this.transactionRepository.create(
       createTransactionInput,
     );
-    const account = await this.accountRepository.findOneBy({
-      id: createTransactionInput.accountId,
-    });
     return this.transactionRepository.save({
       ...transaction,
-      accounts: [account],
+      accounts: [updatedAccount],
     });
   }
 

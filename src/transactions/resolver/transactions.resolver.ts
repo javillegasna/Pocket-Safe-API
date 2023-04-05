@@ -12,20 +12,40 @@ import { CreateTransactionInput } from '../dto/create-transaction.input';
 import { UpdateTransactionInput } from '../dto/update-transaction.input';
 import { Category } from 'src/categories/models/category.entity';
 import { CategoriesService } from 'src/categories/service/categories.service';
+import { AccountsService } from 'src/accounts/service/accounts.service';
+import { TransactionType } from '../common/transactions.enums';
+import { Account } from 'src/accounts/models/account.entity';
 
 @Resolver(() => Transaction)
 export class TransactionsResolver {
   constructor(
     private readonly transactionsService: TransactionsService,
     private readonly categoriesService: CategoriesService,
+    private readonly accountsService: AccountsService,
   ) {}
 
   @Mutation(() => Transaction)
-  createTransaction(
+  async createTransaction(
     @Args('createTransactionInput')
     createTransactionInput: CreateTransactionInput,
   ) {
-    return this.transactionsService.create(createTransactionInput);
+    let updatedAccount: Account;
+    if (createTransactionInput.transactionType === TransactionType.INPUT) {
+      updatedAccount = await this.accountsService.addIncomingAmount(
+        createTransactionInput.accountId,
+        createTransactionInput.amount,
+      );
+    }
+    if (createTransactionInput.transactionType === TransactionType.OUTPUT) {
+      updatedAccount = await this.accountsService.subtractOutgoingAmount(
+        createTransactionInput.accountId,
+        createTransactionInput.amount,
+      );
+    }
+    return this.transactionsService.create(
+      createTransactionInput,
+      updatedAccount,
+    );
   }
 
   @Query(() => [Transaction], { name: 'transactions' })
